@@ -34,7 +34,6 @@ public class SignUpService {
 
         RegisterEntity user = new RegisterEntity();
         user.setUid(uid);
-        //user.setPasswd(passwd);
         user.setPasswd(passwordEncoder().encode(passwd)); // パスワードをハッシュ化
         user.setRole(role);
         portalRepository.save(user);	// DBに登録
@@ -48,7 +47,7 @@ public class SignUpService {
             return false;  // DBに存在しない → 削除を拒否
         }
         
-        portalRepository.deleteById(uid);  // IDでユーザーを削除
+        portalRepository.deleteByUid(uid);  // IDでユーザーを削除
         return true;
     }
     
