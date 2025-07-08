@@ -1,0 +1,84 @@
+@charset "UTF-8";
+a{
+	text-decoration: none; /* 下線を消したい場合 */
+}
+body{
+	background-color: #fffaf0;
+}
+header h1{
+	width: fit-content;
+	margin: 20px auto;
+	padding-left: 15px;
+	border-left: 5px solid gray;
+}
+.contents{
+	width: 1000px;
+	margin: 0 auto;
+	display: flex;
+	justify-content: center; /* 主軸（横方向）の中央揃え */
+ 	align-items: center;   /*    交差軸（縦方向）の中央揃え */
+ 	align-items: stretch; /* 子要素の高さを自動で揃える（親要素の高さに一致） */
+}
+.information{
+	width: 500px;
+	border: 2px solid black;
+	border-radius: 10px;
+	padding: 20px;
+	
+	font-size: 150%;
+	background-color: #f7f7f7;
+}
+.information-top{
+	display: flex;
+	justify-content: space-between; /* 子要素を左右に配置 */
+  	align-items: center;            /* 必要に応じて垂直中央揃え */
+}
+.information .greeting{
+	margin: 50px;
+	text-align: center;
+}
+.start_end{
+	width: 500px;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap; /* 横幅に収まるように折り返す */
+	text-align: center;
+}
+.function{
+	width: 30%;
+	margin: 10px 5px;
+	padding: 40px 20px;
+	border: 2px solid black;
+	border-radius: 10px;
+	
+	font-size: 180%;
+	text-indent: 15px;	/* letter-spacing と同じ値を設定することで文字列が左にずれることを防ぐ*/
+	letter-spacing: 20px; /* 文字間の調整 */
+	color: white;
+}
+.start{
+	background-color: #fc9420;
+}
+.end{
+	background-color: #3873ba;
+}
+.request{
+	background-color: #30945c;
+}
+.history{
+	background-color: #5444a4;
+}
+.break{
+	background-color: #e48898;
+}
+.back{
+	background-color: #999999;
+}
+.valid:hover{
+	opacity: .6;
+}
+.notValid{
+	filter: brightness(45%);
+}

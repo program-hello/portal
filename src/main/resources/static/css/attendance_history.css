@@ -1,0 +1,39 @@
+@charset "UTF-8";
+a{
+	text-decoration: none; /* 下線を消したい場合 */
+	color: blue;
+}
+body{
+	background-color: #fffaf0;
+}
+header h1{
+	width: fit-content;
+	margin: 20px auto;
+	padding-left: 15px;
+	border-left: 5px solid gray;
+}
+.contents{
+	width: 1000px;
+	margin: 0 auto;
+	border: 2px solid black;
+	justify-content: center; /* 主軸（横方向）の中央揃え */
+ 	align-items: center;   /*    交差軸（縦方向）の中央揃え */
+ 	align-items: stretch; /* 子要素の高さを自動で揃える（親要素の高さに一致） */
+ 	
+ 	background-color: #f7f7f7;
+}
+.contents table{
+	margin: 20px auto;
+	text-align: center;
+}
+table th, table td {
+    padding: 0 15px;
+}
+.page{
+	text-align: center;
+}
+
+.backButton{
+	text-align: center;
+	margin: 20px 0;
+}

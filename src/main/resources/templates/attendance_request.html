@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>申請フォーム</title>
+<link rel="stylesheet" th:href="@{/css/attendance_request.css}" />
+</head>
+<body>
+	<header>
+		<h1>申請フォーム</h1>
+	</header>
+	<div class="contents">
+		<form th:action="@{/attendance/request/post}" th:object="${attendanceRecordsDTO}" method="post">
+			  <table>
+				  <tr>
+					  <th>申請年月日：</th>
+					  <td>							 
+  								<select name="year" th:field="*{year}">
+    								<option th:each="d : ${#numbers.sequence(currentYear - 1,currentYear + 1)}"
+           								th:value="${d}" 
+            							th:text="${d}">1</option>
+								</select>年	
+  								<select name="month" th:field="*{month}">
+    								<option th:each="d : ${#numbers.sequence(1,12)}"
+           								th:value="${d}" 
+            							th:text="${d}">1</option>
+								</select>月		
+  								<select name="day" th:field="*{day}">
+    								<option th:each="d : ${#numbers.sequence(1,31)}"
+           								th:value="${d}" 
+            							th:text="${d}">1</option>
+								</select>日
+								<button type="button" onclick="goToAttendance()">検索</button>
+								<span th:if="${statusStr}" th:text="${statusStr}"></span>
+								<span th:if="${#fields.hasErrors('workDate')}" th:errors="*{workDate}" style="color: red"></span>			  				
+					  </td>
+				  </tr>
+				  <tr>
+					  <th>申請項目：</td>
+					  <td>
+<!--						  <span th:if="${statusStr}" th:text="${statusStr}"></span>-->
+						  
+						  
+			  					<select name="status" th:field="*{status}">
+    								<option value="-1">----</option>
+    								<option value="1">遅刻</option>
+    								<option value="2">早退</option>
+    								<option value="3">出張</option>
+    								<option value="4">欠席</option>
+<!--    								<option value="99">その他</option>-->
+  								</select>
+  								<span th:if="${#fields.hasErrors('status')}" th:errors="*{status}" style="color: red"></span>							
+					  </td>
+				  </tr>
+				  <tr>
+					  <th>理由：</td>
+					  <td>
+							<div>
+				   				<textarea name="remarks" placeholder="入力" th:field="*{remarks}" rows="10" cols="50"/>
+			 						<div th:if="${#fields.hasErrors('remarks')}" th:errors="*{remarks}" style="color: red"></div>
+			 				</div>
+					  </td>
+				  </tr>
+			  </table>
+			  <div class="button">
+				  	<button type="button" th:onclick="|location.href='@{/attendance}'|">戻る</button>
+				 	<button type="submit" onclick="return confirm('送信しますか？');">送信</button>				
+			  </div>
+				
+			<!--	ログイン者のserial_id を隠し要素で渡す-->
+			 <input type="hidden" name="senderId" th:value="${session.mySerial_id}"/>
+		</form>
+			
+		<a th:href="@{/attendance/holiday/request}"><div class="holidayRequest">
+			休暇申請
+		</div></a>
+	</div>
+</body>
+<script>
+  	function goToAttendance() {
+    	const year = document.getElementById('year').value;
+    	const month = document.getElementById('month').value;
+    	const day = document.getElementById('day').value;
+    	// URL を組み立ててコントローラーに遷移
+    	window.location.href = `/attendance/request/serch?year=${year}&month=${month}&day=${day}`;
+  	}
+</script>
+</html>

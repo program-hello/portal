@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" th:href="@{/css/attendance_history.css}" />
+</head>
+<body>
+	<header>
+		<h1>勤怠管理履歴</h1>
+	</header>
+	
+	<div class="contents">
+		<table>
+			<tr>
+				<th>日付</th>
+				<th>出勤時間</th>
+				<th>退勤時間</th>
+				<th>休憩時間</th>
+				<th>実働時間</th>
+<!--				<th>ステータス</th>-->
+			</tr>
+			<tr th:each="history, iterStat : ${pageAll}">				
+    			<td th:text="${history.workDate}"></td>
+    			<td th:text="${history.clockInTime}"></td>
+    			<td th:text="${history.clockOutTime}"></td>
+    			<td th:text="${history.breakMinutes}"></td>
+    			<td th:text="${history.workMinutes}"></td>
+<!--    			 <td th:text="${iterStat.index < statuses.size() ? statuses[iterStat.index] : ''}"></td>-->
+    		</tr>
+		</table>
+				<p class="page">
+					<!-- 先頭のページではない時、 ←前 にひとつ前のページのリンクを付与する -->
+					<span th:if="${pageAll.isFirst()}">←前</span>
+					<a th:unless="${pageAll.isFirst()}" th:href="@{/attendance/history(page=${pageAll.getNumber() - 1})}">←前</a>
+
+					<!-- リンク付きページ数の表示 -->
+					<span th:each="i : ${#numbers.sequence(0,pageAll.getTotalPages() - 1)}">
+					<!-- この th;block でリンク付きページ数を何個表示するか制御している
+			     		現在のページ数から前後何個表示するか決めている 
+			     		変更する際には、-1 , +1 の数値を変更する現在のページから前後に何ページ表示するかに対応している -->
+					<th:block th:if="${i >= pageAll.getNumber() - 1 && i <= pageAll.getNumber() + 1}">
+						<span th:if="${i == pageAll.getNumber()}" th:text="${i + 1}"></span>
+						<a th:if="${i != pageAll.getNumber()}" th:href="@{/attendance/history(page=${i})}" th:text="${i + 1}"></a>
+					</th:block>
+					</span>
+
+					<!-- 最終のページではない時、 →次 にひとつ後のページのリンクを付与する -->
+       					<span th:if="${pageAll.isLast()}">次→</span>
+        				<a th:unless="${pageAll.isLast()}" th:href="@{/attendance/history(page=${pageAll.getNumber() + 1})}">次→</a>
+				</p>
+	</div>
+	<div class="backButton"><button type="button" th:onclick="|location.href='@{/attendance}'|">戻る</button></div>
+</body>
+</html>

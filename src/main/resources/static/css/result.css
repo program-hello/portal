@@ -1,0 +1,14 @@
+@charset "UTF-8";
+/*共通*/
+a{
+	text-decoration: none; /* 下線を消したい場合 */
+}
+body{
+	background-color: #fffaf0;
+}
+header{
+	text-align: center;
+}
+div{
+	text-align: center;
+}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>ホーム</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<link rel="stylesheet" th:href="@{/css/home.css}" />
+</head>
+<body>
+	<header class="header">
+		<h1>ホーム
+			<span th:if="${session.myRole == 'ROLE_USER'}">【一般ユーザー】</span>
+			<span th:unless="${session.myRole == 'ROLE_USER'}">【管理者】</span>
+		</h1>
+		<div class="topInfo">
+			<p>
+				<span  class="welcome">こんにちは <span th:text="${session.myUid}" ></span> さん</span>
+				<span th:if="${cntChatUnread > 0}" class="chatUnread">※ 新着メッセージがあります</span>
+			</p>
+		</div>	
+	</header>
+	<div class="contents">
+		<a th:href="@{/chat}">
+			<div>
+				<span>チャット</span>
+			</div>
+		</a>
+		<a th:href="@{/attendance}">
+			<div>
+				<span>勤怠管理</span>
+			</div>
+		</a>
+		<a th:href="@{/admin}" th:if="${session.myRole == 'ROLE_ADMIN'}">
+			<div>
+				<span>管理者権限</span>
+			</div>
+		</a>
+		<a th:href="@{/logout}">
+			<div>
+				<span>ログアウト</span>
+			</div>
+		</a>
+		
+		<a th:href="@{/password/update}" th:if="${PasswordResetFlag == true}" class="passwordReset">
+			<div>
+				<span>パスワード更新</span>
+			</div>
+		</a>
+
+	</div>
+	
+</body>
+<script th:inline="javascript">
+
+	// web-socket の記述
+	const socket = new SockJS('/ws');
+    const stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, function (frame) {
+		console.log("WebSocket接続成功");
+		
+		//チャット相手のserial_idとログイン者のsserial_idを結合した文字列を認証コードに使っている
+       // const myId = "[[${session.receiver_id}]]" + "[[${session.mySerial_id}]]"; // Javaでセッションに登録したを値を取得
+       const myId = "[[${session.mySerial_id}]]"; // Javaでセッションに登録したを値を取得
+        // web-socketの受信時の動作の記述（個別チャット）
+        stompClient.subscribe("/topic/reload/" + myId, function (message) {
+			if (message.body === "reloadChatHomeOne") {
+                window.location.reload();  // メッセージが "reloadChatHomeOne" の場合、ページをリロード
+            } 
+        });
+        // 全体チャットのweb-socketメッセージを受信
+        stompClient.subscribe("/topic/public", function (message) {
+			if (message.body === "reloadChatHomeGroup") {
+                window.location.reload();  // メッセージが "reloadChatHomeGroup" の場合、ページをリロード
+            } 
+        });
+    });
+</script>
+</html>

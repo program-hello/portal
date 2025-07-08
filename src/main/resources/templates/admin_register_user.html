@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>新規登録</title>
+<link rel="stylesheet" th:href="@{/css/admin_register_user.css}" />
+</head>
+<body>
+	<header>
+		<h1>ユーザー新規登録</h1>
+	</header>
+	<div class="contents">
+		<form th:action="@{/admin/register/user/post}" th:object="${registerDTO}" method="post">
+		<table>
+			<tr>
+				<th><label for="uid">ユーザーID（半角英数字 1～10文字）:</label></th>
+				<td>
+					<input type="text" th:field="*{uid}" placeholder="ユーザーID"/>
+            		<div th:if="${#fields.hasErrors('uid')}" th:errors="*{uid}" style="color: red"></div>
+				</td>
+			</tr>
+			<tr>
+				<th><label for="passwd">パスワード（半角英数字 1～10文字）:</label></th>
+				<td>
+					<input type="text" th:field="*{passwd}" placeholder="パスワード"/>
+            		<div th:if="${#fields.hasErrors('passwd')}" th:errors="*{passwd}" style="color: red">
+				</td>
+			</tr>
+			<tr>
+				<th>属性：</th>
+				<td>
+					<input type="radio" name="role" id="role1" value="ROLE_USER" checked/><label for="role1">一般ユーザー</label>
+        			<input type="radio" name="role" id="role2" value="ROLE_ADMIN"/><label for="role2">管理者</label>
+				</td>
+			</tr>
+			
+		</table>
+		<div class="button">
+			<button type="button" th:onclick="|location.href='@{/admin}'|">戻る</button>
+            <button type="submit" onclick="return confirm('登録しますか？');">登録</button>
+		</div>
+    </form>
+	</div>
+
+</body>
+</html>

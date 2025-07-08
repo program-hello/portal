@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>個別チャット</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<link rel="stylesheet" th:href="@{/css/chat_room_one.css}" />
+</head>
+<body>
+	<header>
+		<h1>@<span th:text="${session.receiver_uid}"></span>【個別チャット】</h1>
+	</header>
+
+<!--	メッセージを表示 -->
+	<div class="chatFrame" id="chatFrame">
+		<ul>
+			<li th:each="cm, iterStat : ${session.chatMessageOne}"　th:classappend="${iterStat.index == session.chatMessageOne.size() - highlightCount} ? 'highlight'">
+				<span class="unreadMessage" th:if="${iterStat.index == session.chatMessageOne.size() - highlightCount}">ここから未読メッセージ</span>
+				<!-- 自分のメッセージを識別する-->
+				<div th:if="${session.mySerial_id == cm[1]}" id="chatBlockMy">
+					<span class="timestamp" th:utext="${cm[4]}"></span>
+					<div  class="myMessage">
+						<span  th:text="${cm[3]}"></span>
+					</div>
+				</div>
+				<div th:if="${session.mySerial_id != cm[1]}" id="chatBlockYou">
+					<div class="youMessage">
+						<span th:text="${cm[3]}" style="color: black"></span>
+					</div>
+					<span class="timestamp" th:utext="${cm[4]}"></span>
+				</div>
+			</li>
+		</ul>	
+	</div>
+		<div class="chatForm">
+			<form th:action="@{/chat_room_one/message_post}"  method="post">
+            		<textarea id="message_text" name="messageText" rows="1" style="overflow: hidden; resize: none;" cols="50" placeholder="メッセージを入力"/></textarea>
+        			<!--　隠し要素で各種データを渡す-->
+        			<input type="hidden" name="chatRoomId" th:value="0"/>
+        			<input type="hidden" name="senderId" th:value="${session.mySerial_id}"/>
+        			<input type="hidden" name="receiverId" th:value="${session.receiver_id}"/>
+            		<button type="submit">送信</button>
+            		<br><button type="button" th:onclick="|location.href='@{/reChatOne}'|">戻る</button>
+        		</div>
+    		</form>
+		</div>
+
+	
+	
+</body>
+
+<script th:inline="javascript">
+	// ページをロードした時点でチャットのスクロールを一番下に自動でスクロールする
+  	window.onload = function() {
+    var chatBox = document.getElementById("chatFrame");
+    chatBox.scrollTop = chatBox.scrollHeight;
+  };
+    // テキストエリアをユーザーの入力に応じてサイズを変化させる
+    const textarea = document.getElementById('message_text');
+  	textarea.addEventListener('input', function () {
+    this.style.height = 'auto'; // 一旦リセット
+    this.style.height = `${this.scrollHeight}px`; // scrollHeightで自然にフィット
+	});
+	
+	// web-socket の記述
+	const socket = new SockJS('/ws');
+    const stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, function (frame) {
+		console.log("WebSocket接続成功");
+		
+        //チャット相手のserial_idとログイン者のsserial_idを結合した文字列を認証コードに使っている
+        const myId = "[[${session.receiver_id}]]" + "[[${session.mySerial_id}]]"; // セッションIDを取得
+        stompClient.subscribe("/topic/reload/" + myId, function (message) {
+			if (message.body === "reload") {
+                window.location.reload();  // メッセージが "reload" の場合、ページをリロード
+            } 
+        });
+    });
+</script>
+</html>

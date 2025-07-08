@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>勤怠管理ホーム</title>
+<link rel="stylesheet" th:href="@{/css/attendance_home.css}" />
+</head>
+<body>
+	<header>
+		<h1>勤怠管理システム</h1>
+	</header>
+	<div class="contents">
+		<div class="information">
+			<div class="information-top">
+				<div>
+					<span th:text="${session.todayLocalDate}"></span>
+					<span th:text="${session.dayOfWeek}"></span>
+				</div>
+				<div>
+					ステータス：
+					<span th:if="${session.verifyClockInTime == null && session.verifyClockOutTime == null}">----</span>
+					<span th:if="${session.verifyClockInTime != null && session.verifyClockOutTime == null}">出勤</span>
+					<span th:if="${session.verifyClockInTime != null && session.verifyClockOutTime != null}">退勤</span>
+				</div>
+			</div>
+			<div class="greeting" th:utext="${session.greeting}"></div>
+			<div class="">
+				<div>出勤時間：<span th:if="${session.clockInTime != null}" th:text="${session.clockInTime}"></span></div>
+				<div>退勤時間：<span th:if="${session.clockOutTime != null}" th:text="${session.clockOutTime}"></span></div>
+			</div>
+		</div>
+		<div class="start_end">
+<!--		出勤状態と退勤状態によってボタンのURLを有効無効を決定する-->
+			<div th:if="${session.verifyClockInTime != null}" class="function start notValid" >出勤</div>
+			<a th:if="${session.verifyClockInTime == null}" th:href="@{/attendance/start}" onclick="return confirm('出勤しますか？');" class="function start valid"><div>出勤</div></a>
+			<div th:if="${(session.verifyClockInTime == null && session.verifyClockOutTime == null) || (session.verifyClockInTime != null && session.verifyClockOutTime != null)}" class="function end notValid">退勤</div>
+			<a th:if="${session.verifyClockInTime != null && session.verifyClockOutTime == null}" th:href="@{/attendance/end}" onclick="return confirm('退勤しますか？');" class="function end valid"><div>退勤</div></a>
+<!--			<div th:if="${(session.verifyClockInTime == null && session.verifyClockOutTime == null) || (session.verifyClockInTime != null && session.verifyClockOutTime != null)}" class="function break notValid" >休憩</div>-->
+<!--			<a th:href="@{/home}" th:if="${session.verifyClockInTime != null && session.verifyClockOutTime == null}"class="function break valid"><div>休憩</div></a>-->
+			<a th:href="@{/attendance/request}" class="function request valid"><div>申請</div></a>
+			<a th:href="@{/attendance/history}" class="function history valid"><div>履歴</div></a>
+			<a th:href="@{/home}" class="function back valid"><div class="">戻る</div></a>
+		</div>
+	</div>
+
+		
+		
+		
+		
+	</div>
+</body>
+</html>

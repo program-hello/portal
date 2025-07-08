@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>新規登録</title>
+<link rel="stylesheet" th:href="@{/css/admin_register_user.css}" />
+</head>
+<body>
+	<header>
+		<h1>ステータス登録</h1>
+	</header>
+	<div class="contents">
+		<form th:action="@{/admin/register/status/post}" th:object="${adminRegisterStatusDTO}" method="post">
+		<table>
+			<tr>
+				<th>ユーザーID：</th>
+				<td>
+					<select name="uid" th:field="*{uid}">
+						<option value="-1">----</option>
+						<option th:each="list : ${uidList}" th:text="${list.uid}" th:value="${list.uid}"></option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th>ステータス：</th>
+				<td>
+						<select name="status" th:field="*{status}">
+    						<option value="-1">----</option>
+    						<option value="1">遅刻</option>
+    						<option value="2">早退</option>
+    						<option value="3">出張</option>
+    						<option value="4">欠席</option>
+    						<option value="5">休日</option>
+  						</select>
+				</td>
+			</tr>
+			<tr>
+				<th>登録年月日：</th>
+					  <td>							 
+  							<select name="year" th:field="*{year}">
+    							<option th:each="d : ${#numbers.sequence(currentYear - 1,currentYear + 1)}"
+           							th:value="${d}" 
+            						th:text="${d}">1</option>
+							</select>年	
+  							<select name="month" th:field="*{month}">
+    							<option th:each="d : ${#numbers.sequence(1,12)}"
+           							th:value="${d}" 
+            						th:text="${d}">1</option>
+							</select>月		
+  							<select name="day" th:field="*{day}">
+    							<option th:each="d : ${#numbers.sequence(1,31)}"
+           							th:value="${d}" 
+            						th:text="${d}">1</option>
+							</select>日
+							<span th:if="${#fields.hasErrors('workDate')}" th:errors="*{workDate}" style="color: red"></span>			  				
+					  </td>
+			</tr>
+		</table>
+		<div class="button">
+			<button type="button" th:onclick="|location.href='@{/admin}'|">戻る</button>
+            <button type="submit" onclick="return confirm('登録しますか？');">登録</button>
+		</div>
+    </form>
+	</div>
+
+</body>
+</html>

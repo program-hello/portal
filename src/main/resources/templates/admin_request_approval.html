@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>申請承認</title>
+<link rel="stylesheet" th:href="@{/css/admin_request_approval.css}" />
+</head>
+<body>
+	<header>
+		<h1>申請承認</h1>
+	</header>
+	<div class="contents">
+		<form th:action="@{/admin/request/approval/search}" method="post" th:object="${adminRequestApprovalDTO}">
+			<div class="searchInfo">
+				ユーザーID：
+				<select name="uid" th:field="*{uid}">
+					<option value="all">ALL</option>
+					<option th:each="list : ${uidList}" th:text="${list.uid}" th:value="${list.uid}"></option>
+				</select>
+				年月：
+                        <select id="year" name="year" th:field="*{year}">
+                            <option th:each="d : ${#numbers.sequence(2010, currentYear + 1)}"
+                                    th:value="${d}" 
+                                    th:text="${d}">1</option>
+                        </select>年    
+                        <select id="month" name="month" th:field="*{month}">
+                            <option th:each="d : ${#numbers.sequence(1, 12)}"
+                                    th:value="${d}" 
+                                    th:text="${d}">1</option>
+                        </select>月    
+
+						<input type="checkbox" name="isAllCheck" id="isAllCheck" value="1" th:field="*{isAllCheck}" onchange="disable()">
+                        <!-- false を送るための hidden チェックされていなければ false を強制的に送る-->
+						<input type="hidden" name="isAllCheck" value="0">
+                        <label for="isAllCheck">全て</label>
+                        
+                        <input type="checkbox" name="isHolidayCheck" id="isHolidayCheck" value="1" th:field="*{isHolidayCheck}">
+                        <!-- false を送るための hidden チェックされていなければ false を強制的に送る-->
+						<input type="hidden" name="isHolidayCheck" value="0">
+                        <label for="isHolidayCheck">休暇申請</label>
+                        <button type="submit">検索</button>
+			</div>
+			
+		</form>
+<!--	 休暇申請ボタンにチェックが入っていないとき　-->
+		<div class="resultOther scroll-box" th:if="${resultRecordsChangeStatusList != null && resultRecordsChangeStatusList.size() > 0}">
+			<table>
+				<tr>
+					<th>ユーザーID</th>
+					<th>年月日</th>
+					<th>ステータス</th>
+					<th class="thLimit">理由</th>
+					<th>入力</th>
+				</tr>
+				<tr th:each="list : ${resultRecordsChangeStatusList}">
+					<td th:text="${list.uid}"></td>
+					<td th:text="${list.workDate}"></td>
+					<td th:text="${list.statusName}"  th:classappend="(${list.status != 0}) ? 'active' : ''"></td>
+					<td th:text="${list.remarks}" class="thLimit"></td>
+					<td th:if="${list.isCheckRemarks == true || list.status == 0}">○</td>
+					<td th:if="${list.isCheckRemarks == false && list.status != 0}" th:classappend="(${list.status != 0}) ? 'isCheckFalse' : ''">未</td>					
+				</tr>
+			</table>			
+		</div>
+		<!--	 休暇申請ボタンにチェックが入っているとき　-->
+		<div class="resultHoliday scroll-box" th:if="${resultRecordsAdminAddUidList != null && resultRecordsAdminAddUidList.size() > 0}">
+						<table>
+				<tr>
+					<th>ユーザーID</th>
+					<th>年月日</th>
+					<th class="thLimit">理由</th>
+					<th>ステータス</th>
+					<th></th>
+				</tr>
+				<tr th:each="list : ${resultRecordsAdminAddUidList}">
+					<td th:text="${list.uid}"></td>
+					<td th:text="${list.holidayDate}" id="holidayDate"></td>
+					<td th:text="${list.remarks}" class="thLimit"></td>	
+<!--					承認ボタン-->
+					<form th:action="@{/admin/request/approval/post}" method="post">
+						<input type="hidden" name="serialId" th:value="${list.serialId}">
+						<input type="hidden" name="holidayDate" th:value="${list.holidayDate}">
+						<td  th:if="${list.status == 0}" class="isCheckFalse"><button type="submit" onclick="return confirm('承認しますか？');">承認</button></td>
+						<td th:if="${list.status == 1}">〇</td>	
+					</form>						
+				</tr>
+			</table>		
+		</div>
+		<div class="button">
+			<button class="buttonRe" type="button" th:onclick="|location.href='@{/admin}'|">戻る</button>
+		</div>
+		
+	</div>
+</body>
+<script>
+	// [全て]チェックボタンが押されているとき、[年月]を選択不能(disable)にする
+	function disable(){
+		// [全て]がチェックされている
+		if(document.getElementById("isAllCheck").checked){
+				document.getElementById("year").disabled = true;
+				document.getElementById("month").disabled = true;
+		} else {
+				document.getElementById("year").disabled = false;
+				document.getElementById("month").disabled = false;
+		}
+	}
+	
+	// ページがリロードしたときにもチェックボタンの状態によって、[年月]の状態を選択する
+	window.onload = function () {
+    if (document.getElementById("isAllCheck").checked) {
+      document.getElementById("year").disabled = true;
+      document.getElementById("month").disabled = true;
+    } else {
+      document.getElementById("year").disabled = false;
+      document.getElementById("month").disabled = false;
+    }
+  };
+</script>
+</html>

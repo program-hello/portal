@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>管理者画面</title>
+<link rel="stylesheet" th:href="@{/css/admin_home.css}" />
+</head>
+<body>
+	<header>
+		<h1>管理者画面</h1>
+	</header>
+	<div class="contents">
+		<button type="button" th:onclick="|location.href='@{/admin/register/user}'|">ユーザー新規登録</button>
+		<button type="button" th:onclick="|location.href='@{/admin/delete/user}'|">ユーザー削除</button>
+		<button type="button" th:onclick="|location.href='@{/admin/reset_password}'|">パスワードリセット</button>
+		<button type="button" th:onclick="|location.href='@{/admin/request/approval}'|">申請承認</button>
+		<button type="button" th:onclick="|location.href='@{/admin/register/status}'|">ステータス登録</button>
+		<button type="button" th:onclick="|location.href='@{/home}'|">戻る</button>
+	</div>
+
+</body>
+</html>

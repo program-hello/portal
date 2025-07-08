@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>チャット　ホーム</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<link rel="stylesheet" th:href="@{/css/chat_home.css}" />
+</head>
+<body>
+	<header>
+		<h1 >チャット　ホーム</h1>
+	</header>
+
+	<div class="content">
+		<div class="containerTop">
+			<h2>チャットをしたいメンバーの名前をクリック</h2>
+			<a th:href="@{/chat_room_all}" class="groupLink">
+				<div class="groupChat">
+					<span class="unreadGroup" th:text="'*' + ${cntGroupUnread}" th:if="${cntGroupUnread > 0}"></span>
+					全体チャット
+				</div>
+			</a>
+		</div>
+		<ul>
+    		<!-- チャット相手ごとの表示（自分は除外） -->
+    		<li th:each="list : ${session.chatUnreadList}" 
+        		th:if="${session.mySerial_id != list.registerEntity2.serialId}" 
+        		class="userUid">
+        
+        		<a th:href="@{/chat_room_one(chat_room_id=0, receiver_id=${list.registerEntity2.serialId}, receiver_uid=${list.registerEntity2.uid})}">
+            		<span class="unread" th:if="${list.countFlag > 0}" th:text="'*' + ${list.countFlag}"></span>
+            		<span th:text="${list.registerEntity2.uid}"></span>
+        		</a>
+    		</li>
+		</ul>
+		<button class="buttonRe" type="button" th:onclick="|location.href='@{/home}'|">戻る</button>
+	</div>
+
+</body>
+<script th:inline="javascript">
+
+	// web-socket の記述
+	const socket = new SockJS('/ws');
+    const stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, function (frame) {
+		console.log("WebSocket接続成功");
+		
+		//チャット相手のserial_idとログイン者のsserial_idを結合した文字列を認証コードに使っている
+       // const myId = "[[${session.receiver_id}]]" + "[[${session.mySerial_id}]]"; // Javaでセッションに登録したを値を取得
+       const myId = "[[${session.mySerial_id}]]"; // Javaでセッションに登録したを値を取得
+        // web-socketの受信時の動作の記述（個別チャット）
+        stompClient.subscribe("/topic/reload/" + myId, function (message) {
+			if (message.body === "reloadChatHomeOne") {
+                window.location.reload();  // メッセージが "reloadChatHomeOne" の場合、ページをリロード
+            } 
+        });
+        
+        // 全体チャットのweb-socketメッセージを受信
+        stompClient.subscribe("/topic/public", function (message) {
+			if (message.body === "reloadChatHomeGroup") {
+                window.location.reload();  // メッセージが "reloadChatHomeGroup" の場合、ページをリロード
+            } 
+        });
+    });
+</script>
+</html>

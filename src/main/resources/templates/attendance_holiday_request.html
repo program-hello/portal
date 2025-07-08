@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>申請フォーム</title>
+    <link rel="stylesheet" th:href="@{/css/attendance_request.css}" />
+</head>
+<body>
+    <header>
+        <h1>休暇申請フォーム</h1>
+    </header>
+    <div class="contents">
+        <form id="form" th:action="@{/attendance/holiday/request/post}" th:object="${attendanceHolidayRequestDTO}" method="post">
+            <table>
+                <tr>
+                    <th>申請年月日：</th>
+                    <td>                             
+                        <select id="year" name="year" th:field="*{year}">
+                            <option th:each="d : ${#numbers.sequence(currentYear, currentYear + 1)}"
+                                    th:value="${d}" 
+                                    th:text="${d}">1</option>
+                        </select>年    
+                        <select id="month" name="month" th:field="*{month}">
+                            <option th:each="d : ${#numbers.sequence(1, 12)}"
+                                    th:value="${d}" 
+                                    th:text="${d}">1</option>
+                        </select>月        
+                        <select id="day" name="day" th:field="*{day}">
+                            <option th:each="d : ${#numbers.sequence(1, 31)}"
+                                    th:value="${d}" 
+                                    th:text="${d}">1</option>
+                        </select>日
+                        <div th:if="${#fields.hasErrors('holidayDate')}" th:errors="*{holidayDate}" style="color: red"></div>        
+                        <button type="button" onclick="addArr()">追加</button>                  
+                    </td>
+                </tr>
+                <tr>
+                    <th>選択日：</th>
+                    <td id="selectedDate"></td>
+                </tr>
+                <tr>
+                    <th>理由：</td>
+                    <td>
+                        <div>
+                            <textarea name="remarks" placeholder="入力" th:field="*{remarks}" rows="10" cols="50"></textarea>
+                            <div th:if="${#fields.hasErrors('remarks')}" th:errors="*{remarks}" style="color: red"></div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <div class="button">
+                <button type="button" th:onclick="|location.href='@{/attendance/request}'|">戻る</button>
+                <button type="button" onclick="sendData()">送信</button>            
+            </div>
+
+            <!-- ログイン者のserial_id を隠し要素で渡す-->
+            <input type="hidden" name="senderId" th:value="${session.mySerial_id}" />
+
+            <!-- 追加の隠しフィールド -->
+            <input type="hidden" id="yearData" name="yearData">
+            <input type="hidden" id="monthData" name="monthData">
+            <input type="hidden" id="dayData" name="dayData">
+        </form>
+    </div>
+</body>
+
+<script>
+    const yearArr = [];
+    const monthArr = [];
+    const dayArr = [];
+    let index = 0;
+
+    function addArr() {
+        const year = document.getElementById("year").value;
+        const month = document.getElementById("month").value;
+        const day = document.getElementById("day").value;
+
+        // 重複チェック
+        for (let i = 0; i < index; i++) {
+            if (yearArr[i] === year && monthArr[i] === month && dayArr[i] === day) {
+                alert("同じ日付はすでに選択されています。");
+                return; // 重複していたら処理を中断
+            }
+        }
+
+        // 新しい日付を配列に追加
+        yearArr[index] = year;
+        monthArr[index] = month;
+        dayArr[index] = day;
+        index++;
+
+        // 表示用の文字列をまとめる
+        let allDates = "";
+        for (let i = 0; i < index; i++) {
+            allDates += `${yearArr[i]}年${monthArr[i]}月${dayArr[i]}日`;
+            if (i !== index - 1) {
+                allDates += " / ";
+            }
+        }
+        // HTMLに表示
+        document.getElementById("selectedDate").textContent = allDates;
+    }
+
+    function updateSelectedDate() {
+        const year = document.getElementById("year").value;
+        const month = document.getElementById("month").value;
+        const day = document.getElementById("day").value;
+
+        const selectedDate = `${year}年${month}月${day}日`;
+        document.getElementById("selectedDate").textContent = selectedDate;
+    }
+
+    function sendData() {
+        // 確認ダイアログを表示
+        const confirmSend = confirm("送信しますか？");
+
+        // ユーザーがOKを押した場合
+        if (confirmSend) {
+            // 配列をカンマ区切りの文字列に変換
+            document.getElementById("yearData").value = yearArr.join(",");
+            document.getElementById("monthData").value = monthArr.join(",");
+            document.getElementById("dayData").value = dayArr.join(",");
+
+            // フォームを送信
+            document.getElementById("form").submit();
+        } else {
+            // キャンセルされた場合は何もしない
+            console.log("送信がキャンセルされました。");
+        }
+    }
+</script>
+</html>
