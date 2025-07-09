@@ -4,14 +4,15 @@
 
 アプリURL<br>
 https://portal-oc33.onrender.com
+<br><br>
+『ログイン情報』<br>
+- 管理者<br>
+  USERNAME：admin<br>
+  PASSWORD：11111
 
-管理者<br>
-USERNAME：admin<br>
-PASSWORD：11111
-
-一般ユーザー<br>
-USERNAME：user01<br>
-PASSWORD：11111<br><br>
+- 一般ユーザー<br>
+  USERNAME：user01<br>
+  PASSWORD：11111<br><br>
 ※ユーザーを追加することは可能です（管理者権限）
 
 ## コンセプト
@@ -22,7 +23,7 @@ PASSWORD：11111<br><br>
 **チャットアプリ**
 - WebSocketを利用したリアルタイム通信
 - 未読メッセージの件数をユーザー毎に表示
-- チャット内で既読メッセージと未読メッセージの境目にラインを引いて『ここから未読メッセージと表示』
+- チャット内で既読メッセージと未読メッセージの境目にラインを引いて『ここから未読メッセージ』と表示
 - データベースに登録された全ユーザーが参加する全体チャットを実装
 
 **勤怠管理アプリ**
