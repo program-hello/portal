@@ -173,7 +173,7 @@ public class AttendanceController {
 		model.addAttribute("attendanceRecordsDTO", new AttendanceRecordsDTO());
 		model.addAttribute("currentYear", LocalDate.now().getYear());
         
-		return "attendance_request";
+		return "attendance_request_result";	
 	}
 	
 	// 入力した日付の status をDBから検索する
@@ -336,7 +336,7 @@ public class AttendanceController {
         	// 必要なデータを html に渡す
         	model.addAttribute("attendanceHolidayRequestDTO", attendanceHolidayRequestDTO);
         	model.addAttribute("currentYear", LocalDate.now().getYear());
-			return "attendance_holiday_request";
+			return "attendance_request_result";
 		}
 		
 		// 履歴ボタンからの遷移
