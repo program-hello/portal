@@ -5,7 +5,7 @@
 アプリURL<br>
 https://portal-oc33.onrender.com
 <br><br>
-『ログイン情報』<br>
+『Webサイトのログイン情報』<br>
 - 管理者<br>
   USERNAME：admin<br>
   PASSWORD：11111
@@ -13,7 +13,7 @@ https://portal-oc33.onrender.com
 - 一般ユーザー<br>
   USERNAME：user01<br>
   PASSWORD：11111<br><br>
-※ユーザーを追加することは可能です（管理者権限）
+※ ユーザーを追加することは可能です（管理者権限）
 
 ## コンセプト
 - springとmysqlの基礎を習得するためにデータベース連携したWebアプリケーションを作成する。
@@ -56,7 +56,6 @@ https://portal-oc33.onrender.com
 - **IDE**：eclipse 2023-12(4.30.0)
 - **DB**：mysql
 - **デプロイ**：Render, railway
-- Git
 - spring-boot-starter-security
 - WebSocket
 - Thymeleaf
